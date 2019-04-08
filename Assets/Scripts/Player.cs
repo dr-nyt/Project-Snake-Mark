@@ -44,12 +44,7 @@ public class Player : MonoBehaviour
             verticalVelocity -= gravity * Time.deltaTime;
         }
         jump = false;
-
-        moveVector = transform.forward;
-        moveVector.x = Input.GetAxisRaw("Horizontal") * speed;
-        moveVector.y = verticalVelocity;
-        moveVector.z = Input.GetAxisRaw("Vertical") * speed;
-        //moveVector = new Vector3(Input.GetAxisRaw("Horizontal") * speed, verticalVelocity, Input.GetAxisRaw("Vertical") * speed);
+        moveVector = new Vector3(Input.GetAxisRaw("Horizontal") * speed, verticalVelocity, Input.GetAxisRaw("Vertical") * speed);
         transform.LookAt(transform.position + new Vector3(moveVector.x, 0, moveVector.z));
         controller.Move(moveVector * Time.deltaTime);
     }
