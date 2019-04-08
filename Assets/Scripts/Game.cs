@@ -11,7 +11,7 @@ public class Game : MonoBehaviour
     [SerializeField]
     private bool lastLevel;
 
-    private int nextLevel;
+    public int nextLevel;
     
     // Start is called before the first frame update
     void Start()
@@ -24,12 +24,11 @@ public class Game : MonoBehaviour
         SceneManager.LoadScene(levelName);
     }
 
-    public void LoadNextLevel()
+    public void loadNextLevel()
     {
         if (!lastLevel)
         {
-            string sceneName = "Level-" + nextLevel;
-            loadLevel(sceneName);
+            loadLevel("Level-" + nextLevel);
         }
         else
         {

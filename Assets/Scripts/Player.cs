@@ -4,6 +4,103 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    //Private Variables
+    [SerializeField]
+    private Rigidbody playerBody;
+    [SerializeField]
+    private float speed = 1f;
+    [SerializeField]
+    private float jumpForce = 5f;
+    [SerializeField]
+    private int coins;
+    [SerializeField]
+    private TMPro.TextMeshProUGUI coinText;
+    private bool jump;
+    private Vector3 inputVector;
+    private Game game;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        playerBody = GetComponent<Rigidbody>();
+        game = FindObjectOfType<Game>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        //playerBody.velocity = new Vector3(2f, playerBody.velocity.y, 2f);
+        inputVector = new Vector3(Input.GetAxisRaw("Horizontal") * speed, playerBody.velocity.y, Input.GetAxisRaw("Vertical") * speed);
+        transform.LookAt(transform.position + new Vector3(inputVector.x, 0, inputVector.z));
+
+        if (Input.GetButtonDown("Jump"))
+        {
+            jump = true;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        playerBody.velocity = inputVector;
+        if(jump && IsGrounded())
+        {
+            playerBody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            jump = false;
+        }
+    }
+
+    bool IsGrounded()
+    {
+        float distance = GetComponent<Collider>().bounds.extents.y + 0.3f;
+        Ray ray = new Ray(transform.position, Vector3.down);
+        return Physics.Raycast(ray, distance);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            game.ReloadCurrentLevel();
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        switch (other.tag)
+        {
+            case "Coin":
+                coins++;
+                Destroy(other.gameObject);
+
+                coinText.text = string.Format("Coins\n{0}", coins);
+                break;
+            
+            case "Goal":
+                other.GetComponent<Goal>().checkForCompletion(coins);
+                break;
+            
+            default:
+                break;
+        }
+        
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
     private CharacterController controller;
     private Game game;
 
@@ -52,91 +149,5 @@ public class Player : MonoBehaviour
         //moveVector = new Vector3(Input.GetAxisRaw("Horizontal") * speed, verticalVelocity, Input.GetAxisRaw("Vertical") * speed);
         transform.LookAt(transform.position + new Vector3(moveVector.x, 0, moveVector.z));
         controller.Move(moveVector * Time.deltaTime);
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            game.ReloadCurrentLevel();
-        }
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-    [SerializeField]
-    private Rigidbody playerBody;
-
-    [SerializeField]
-    private float speed = 1f;
-
-    public float jumpForce = 10f;
-    public float jumpFall = 2.5f;
-    public float lowJump = 2f;
-
-
-    private bool jump;
-    private Vector3 inputVector;
-
-    private Game game;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        playerBody = GetComponent<Rigidbody>();
-        game = FindObjectOfType<Game>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        //playerBody.velocity = new Vector3(2f, playerBody.velocity.y, 2f);
-        inputVector = new Vector3(Input.GetAxisRaw("Horizontal") * speed, playerBody.velocity.y, Input.GetAxisRaw("Vertical") * speed);
-        transform.LookAt(transform.position + new Vector3(inputVector.x, 0, inputVector.z));
-
-        if (Input.GetButtonDown("Jump"))
-        {
-            jump = true;
-        }
-
-        if (playerBody.velocity.y < 0)
-        {
-            playerBody.AddForce(Vector3.up * Physics.gravity.y * (jumpFall - 1), ForceMode.Impulse);
-        }
-
-        else if (playerBody.velocity.y > 0 && !Input.GetButton("Jump"))
-        {
-            playerBody.AddForce(Vector3.up * Physics.gravity.y * (lowJump - 1), ForceMode.Impulse);
-        }
-    }
-
-    private void FixedUpdate()
-    {
-        playerBody.velocity = inputVector;
-        if(jump && IsGrounded())
-        {
-            playerBody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            jump = false;
-        }
-    }
-
-    bool IsGrounded()
-    {
-        float distance = GetComponent<Collider>().bounds.extents.y + 0.3f;
-        Ray ray = new Ray(transform.position, Vector3.down);
-        return Physics.Raycast(ray, distance);
     }*/
+}
