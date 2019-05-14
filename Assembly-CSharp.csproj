@@ -63,6 +63,7 @@
     <Compile Include="Assets\Scripts\Camera.cs" />
     <Compile Include="Assets\Scripts\DynamicEnemy.cs" />
     <Compile Include="Assets\Scripts\Game.cs" />
+    <Compile Include="Assets\Scripts\GameMenu.cs" />
     <Compile Include="Assets\Scripts\Goal.cs" />
     <Compile Include="Assets\Scripts\Player.cs" />
     <Compile Include="Assets\Scripts\StaticEnemy.cs" />
